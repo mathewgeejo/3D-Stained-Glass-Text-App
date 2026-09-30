@@ -84,11 +84,11 @@ export function WindowEditor({ artwork, palette, onChange, onSnapshot, onUndo, o
     }} onPointerDown={e => { e.preventDefault(); e.currentTarget.setPointerCapture(e.pointerId); drawing.current = true; if (tool !== 'picker') onSnapshot(); const cell = cellAt(e); setCursor(cell); paint(...cell); lastCell.current = cell; }} onPointerMove={e => { if (!drawing.current || tool === 'fill') return; const cell = cellAt(e); setCursor(cell); paint(...cell, lastCell.current); lastCell.current = cell; }} onPointerUp={() => { drawing.current = false; lastCell.current = null; }} onPointerCancel={() => { drawing.current = false; }} /></div>
     <div className="canvas-status"><span>{artwork.width} × {artwork.height} pixels</span><span>Cursor {cursor[0] + 1}, {cursor[1] + 1}</span></div>
     <div className="tool-row"><button disabled={!canUndo} onClick={onUndo}>Undo</button><button disabled={!canRedo} onClick={onRedo}>Redo</button><button onClick={() => replace(blankArtwork(artwork.width, artwork.height))}>Clear</button><button onClick={exportArt}>Pixel PNG</button></div>
-    <div className="paint-options"><label>Resolution <select aria-label="Grid resolution" value={artwork.width <= 16 ? 16 : artwork.width <= 24 ? 24 : artwork.width <= 32 ? 32 : 48} onChange={e => {
+    <div className="paint-options"><label>Resolution <select aria-label="Grid resolution" value={artwork.width} onChange={e => {
       const n = +e.target.value, h = Math.min(64, Math.round(n * artwork.height / artwork.width));
       const next = blankArtwork(n, h); next.cells = next.cells.map((_, i) => artwork.cells[Math.min(artwork.height - 1, Math.floor(Math.floor(i / n) / h * artwork.height)) * artwork.width + Math.min(artwork.width - 1, Math.floor(i % n / n * artwork.width))]); replace(next);
-    }}>{[16, 24, 32, 48].map(n => <option value={n} key={n}>{n} columns</option>)}</select></label><button onClick={() => file.current?.click()}>Import image</button><input ref={file} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={e => { void importImage(e.target.files?.[0]); e.target.value = ''; }} /></div>
-    <p className="editor-note">Dark checkerboard cells are opaque. Paint white for clear glass. Edits appear in the room immediately.</p>
+    }}>{![16, 24, 32, 48].includes(artwork.width) && <option value={artwork.width}>{artwork.width} columns</option>}{[16, 24, 32, 48].map(n => <option value={n} key={n}>{n} columns</option>)}</select></label><button onClick={() => file.current?.click()}>Import image</button><input ref={file} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={e => { void importImage(e.target.files?.[0]); e.target.value = ''; }} /></div>
+    <p className="editor-note">Dark checkerboard cells are opaque. Paint white for clear glass. Edits update the live preview immediately.</p>
     {message && <p className="editor-note" role="status">{message}</p>}
   </aside>;
 }

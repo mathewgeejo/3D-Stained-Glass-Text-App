@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ClassicStudio from './ClassicStudio';
 import Studio from './Studio';
 import '../styles/versions.css';
+import '../styles/hud.css';
 
 export default function App() {
   const [roomEnabled, setRoomEnabled] = useState(false);

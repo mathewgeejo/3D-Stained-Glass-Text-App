@@ -59,7 +59,7 @@ export function templateArtwork(template: string, paletteName = 'Cathedral', n =
   }
   return art;
 }
-export function textArtwork(text: string, paletteName: string, seed: number): Artwork {
+export function textArtwork(text: string, paletteName: string, seed: number, customPalette?: string[]): Artwork {
   const glyphs = Array.from(text.toUpperCase()).map(char => {
     if (FONT[char]) return FONT[char];
     const canvas = document.createElement('canvas'); canvas.width = 12; canvas.height = 14;
@@ -68,7 +68,7 @@ export function textArtwork(text: string, paletteName: string, seed: number): Ar
     return Array.from({ length: 7 }, (_, y) => Array.from({ length: 6 }, (_, x) => Number(data[((y * 2 + 1) * 12 + x * 2) * 4 + 3] > 80)));
   });
   const width = Math.max(1, glyphs.reduce((n, g) => n + g[0].length + 1, 0) - 1);
-  const art = blankArtwork(width, 7), colors = palettes[paletteName] || palettes.Cathedral;
+  const art = blankArtwork(width, 7), colors = customPalette || palettes[paletteName] || palettes.Cathedral;
   let offset = 0;
   for (const g of glyphs) {
     g.forEach((row, y) => row.forEach((active, x) => {

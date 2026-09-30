@@ -11,7 +11,7 @@
   
 ## Stained Glass Studio
 
-The app opens in **Classic Light**, the black-stage text renderer from commit `5dfc606`. Enable **Room simulation** in the top bar to use the room, workshop, and advanced light controls. Disable it to return to Classic. Each version keeps its own edits while switching; only the visible renderer runs. Reloading always starts in Classic, and room projects remain saved locally for the next time you enable the room.
+The app opens in **Classic Light**, the black-stage renderer based on commit `5dfc606`. Both Classic and Room have **Text**, **Window**, and **Pixel Art** tabs and the same workshop tools. In Classic, painted cells and window templates emit the original colored light trails; enabling **Room simulation** switches to the room and its advanced light controls. Each version keeps its own edits while switching; only the visible renderer runs. Reloading always starts in Classic, and room projects remain saved locally for the next time you enable the room. Both views use a shared readable HUD with 14px control labels, larger buttons, and higher-contrast text.
 
 `src/app/App.tsx` switches between `ClassicStudio.tsx` and `Studio.tsx`. Classic uses the original `components/GlassStage.tsx` renderer. In the room version, `components/NaturalStage.tsx` manages Three.js and `shaders/churchLight.ts` renders a perspective room with a stained-glass aperture, participating air, and a stone receiving floor.
 

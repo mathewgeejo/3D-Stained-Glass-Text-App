@@ -5,6 +5,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { FONT } from '../utils/font';
+import type { Artwork } from '../glassModel';
 
 export interface GlassSettings { text: string; angle: number; length: number; intensity: number; spread: number; haze: number; bloom: number; thickness: number; size: number; palette: string; seed: number; animate: boolean }
 export const palettes: Record<string, string[]> = {
@@ -75,13 +76,27 @@ function glyph(character: string): number[][] {
   const data=ctx.getImageData(0,0,12,14).data;
   return Array.from({length:7},(_,y)=>Array.from({length:6},(_,x)=>Number(data[((y*2+1)*12+x*2)*4+3]>80)));
 }
-function makeGeometry(text: string, width: number, height: number, settings: GlassSettings) {
+function makeGeometry(text: string, width: number, height: number, settings: GlassSettings, artwork?: Artwork) {
   const letters=Array.from(text.toUpperCase()).map(glyph);
   const columns=letters.reduce((n,g)=>n+g[0].length+1,0)-1;
-  const tile=Math.min(width*0.73/Math.max(columns,1),height*0.019, width*0.045)*settings.size;
+  const tile=(artwork ? Math.min(width*0.52/artwork.width,height*0.43/artwork.height) : Math.min(width*0.73/Math.max(columns,1),height*0.019, width*0.045))*settings.size;
   const positions:number[]=[], uvs:number[]=[], centers:number[]=[], colors:number[]=[], seeds:number[]=[];
   const palette=palettes[settings.palette] || palettes.Cathedral;
   let column=0, count=0;
+  if (artwork) {
+    artwork.cells.forEach((hex, i) => {
+      if (!hex) return;
+      const x = i % artwork.width, y = Math.floor(i / artwork.width);
+      const hash = Math.sin(x*127.1+y*311.7+settings.seed*74.7)*43758.5453;
+      const color = new THREE.Color(hex), seed = hash-Math.floor(hash);
+      const cx = width*0.55+(x-(artwork.width-1)/2)*tile;
+      const cy = height*0.76-y*tile;
+      for (const [u,v] of [[0,0],[1,0],[0,1],[0,1],[1,0],[1,1]]) {
+        positions.push(0,0,0); uvs.push(u,v); centers.push(cx,cy); colors.push(color.r,color.g,color.b); seeds.push(seed);
+      }
+      count++;
+    });
+  } else {
   for(const letter of letters){
     for(let y=0;y<7;y++) for(let x=0;x<letter[y].length;x++) if(letter[y][x]){
       const hash=Math.sin((column+x)*127.1+y*311.7+settings.seed*74.7)*43758.5453;
@@ -94,6 +109,7 @@ function makeGeometry(text: string, width: number, height: number, settings: Gla
       } count++;
     } column+=letter[0].length+1;
   }
+  }
   const geometry=new THREE.BufferGeometry();
   geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
   geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
@@ -103,9 +119,10 @@ function makeGeometry(text: string, width: number, height: number, settings: Gla
   return {geometry,tile,count};
 }
 
-export function GlassStage({settings,onStats,onError,exportRef}:{ settings:GlassSettings; onStats:(s:{tiles:number;fps:number})=>void; onError:(s:string)=>void; exportRef:MutableRefObject<(()=>void)|null> }){
+export function GlassStage({settings,artwork,onStats,onError,exportRef}:{ settings:GlassSettings; artwork?:Artwork; onStats:(s:{tiles:number;fps:number})=>void; onError:(s:string)=>void; exportRef:MutableRefObject<(()=>void)|null> }){
   const host=useRef<HTMLDivElement>(null);
   const current=useRef(settings); current.current=settings;
+  const currentArt=useRef(artwork); currentArt.current=artwork;
   useEffect(()=>{
     const mount=host.current!;
     let renderer:THREE.WebGLRenderer;
@@ -127,6 +144,7 @@ export function GlassStage({settings,onStats,onError,exportRef}:{ settings:Glass
     const rays=new THREE.Mesh(geometry,rayMaterial), tiles=new THREE.Mesh(geometry,tileMaterial);
     rays.frustumCulled=tiles.frustumCulled=false; rays.renderOrder=0;tiles.renderOrder=1;scene.add(rays,tiles);
     let width=0,height=0,key='',tileCount=0,frame=0,frames=0,last=performance.now(),elapsed=0,previous=last;
+    let previousArt: Artwork | undefined;
     const resize=()=>{
       width=mount.clientWidth;height=mount.clientHeight;
       renderer.setSize(width,height);composer.setSize(width,height);
@@ -140,8 +158,8 @@ export function GlassStage({settings,onStats,onError,exportRef}:{ settings:Glass
       if(s.animate&&!reducedMotion.matches) elapsed+=Math.min((now-previous)/1000,0.1);
       previous=now;
       const nextKey=JSON.stringify([s.text,s.palette,s.seed,s.size,width,height]);
-      if(key!==nextKey){
-        const next=makeGeometry(s.text,width,height,s);geometry.dispose();geometry=next.geometry;rays.geometry=tiles.geometry=geometry;uniforms.tileSize.value=next.tile;tileCount=next.count;key=nextKey;
+      if(key!==nextKey || previousArt!==currentArt.current){
+        const next=makeGeometry(s.text,width,height,s,currentArt.current);geometry.dispose();geometry=next.geometry;rays.geometry=tiles.geometry=geometry;uniforms.tileSize.value=next.tile;tileCount=next.count;key=nextKey;previousArt=currentArt.current;
       }
       uniforms.angle.value=(s.angle+(s.animate&&!reducedMotion.matches?Math.sin(elapsed*0.16)*6:0))*Math.PI/180;
       uniforms.beamLength.value=Math.min(height,width*1.1)*s.length;uniforms.spread.value=s.spread;
@@ -156,7 +174,7 @@ export function GlassStage({settings,onStats,onError,exportRef}:{ settings:Glass
     renderer.domElement.addEventListener('webglcontextlost',lost);
     return ()=>{cancelAnimationFrame(frame);observer.disconnect();exportRef.current=null;renderer.domElement.removeEventListener('webglcontextlost',lost);geometry.dispose();rayMaterial.dispose();tileMaterial.dispose();bloom.dispose();output.dispose();composer.dispose();renderer.dispose();renderer.domElement.remove();};
   },[onStats,onError,exportRef]);
-  return <div ref={host} className="glass-canvas" role="img" aria-label={`Colored stained glass spelling ${settings.text || 'nothing'}, with transmitted light beams`} />;
+  return <div ref={host} className="glass-canvas" role="img" aria-label={artwork ? 'Custom stained-glass artwork with colored light beams' : `Colored stained glass spelling ${settings.text || 'nothing'}, with transmitted light beams`} />;
 }
 
 

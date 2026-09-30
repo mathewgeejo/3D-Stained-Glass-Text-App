@@ -1,0 +1,79 @@
+/* Shared readable interface for both renderers. Scene typography is unchanged. */
+.version-shell { --hud-font: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+.version-shell button:disabled { opacity: .4; cursor: default; }
+.version-shell .version-toolbar { height: 46px; font: 600 11px var(--hud-font); letter-spacing: .8px; color: #bfc1c8; }
+.version-shell .room-switch { font: 500 13px var(--hud-font); letter-spacing: 0; color: #f0eee9; }
+.version-shell .switch-track { width: 36px; height: 20px; }
+.version-shell .switch-track::after { width: 12px; height: 12px; }
+.version-shell .room-switch input:checked + .switch-track::after { left: 19px; }
+.version-shell .glass-app { height: calc(100dvh - 46px); font-family: var(--hud-font); color: #dedfe4; }
+.version-shell .stage-header h1 { font-size: 12px; letter-spacing: 1.2px; color: #e5e5e9; }
+.version-shell .edition { font-size: 10px; letter-spacing: 1px; color: #a4a6ae; }
+.version-shell .controls { width: 320px; }
+.version-shell .controls-toggle { height: 44px; font: 600 13px var(--hud-font); letter-spacing: .8px; color: #e2e3e9; border-color: #575961; background: #101115f2; }
+.version-shell .controls-body { max-height: calc(100dvh - 206px); padding: 20px; background: #101115f7; }
+.version-shell .controls button, .version-shell .controls input, .version-shell .controls select { font-family: var(--hud-font); }
+.version-shell .controls h2, .version-shell .controls summary { font: 600 12px var(--hud-font); letter-spacing: .9px; color: #c9bea9; }
+.version-shell .controls section { padding-bottom: 21px; margin-bottom: 21px; }
+.version-shell .parameter { font: 14px var(--hud-font); letter-spacing: 0; color: #e2e4eb; margin-top: 18px; }
+.version-shell .parameter > span { gap: 16px; align-items: baseline; margin-bottom: 7px; }
+.version-shell .parameter output { color: #bdc3cf; font: 13px ui-monospace, Consolas, monospace; }
+.version-shell .parameter input { height: 20px; background: linear-gradient(#535661,#535661) center / 100% 3px no-repeat; }
+.version-shell .parameter input::-webkit-slider-thumb { width: 13px; height: 13px; border-radius: 2px; background: #dfd1b5; }
+.version-shell .parameter input::-moz-range-thumb { width: 13px; height: 13px; border-radius: 2px; background: #dfd1b5; }
+.version-shell .text-label { font: 14px var(--hud-font); letter-spacing: 0; color: #dedfe5; }
+.version-shell .panel-text, .version-shell .controls select { font: 14px var(--hud-font); letter-spacing: 0; min-height: 40px; padding: 9px 10px; color: #e2e4eb; }
+.version-shell .controls .secondary, .version-shell .actions button { font: 600 12px var(--hud-font); letter-spacing: .25px; min-height: 40px; padding: 10px 8px; color: #e0e2e8; }
+.version-shell .motion-toggle { font: 14px var(--hud-font); letter-spacing: 0; color: #e1e3e8; gap: 12px; }
+.version-shell .motion-toggle input { width: 16px; height: 16px; }
+.version-shell .control-note { font: 12px/1.6 var(--hud-font); color: #aeb3bf; letter-spacing: 0; }
+.version-shell .mode-switch button { font: 600 12px var(--hud-font); letter-spacing: .6px; min-height: 42px; padding: 10px 19px; color: #aeb3c0; }
+.version-shell .mode-switch button[aria-pressed=true] { color: #fff0d3; }
+.version-shell .scene-caption > span { font-size: 12px; color: #cec5b5; letter-spacing: 1px; }
+.version-shell .scene-caption p { font-size: 12px; color: #aeb1ba; letter-spacing: 0; }
+.version-shell .creation-dock { min-height: 50px; width: min(640px, 82%); }
+.version-shell .creation-dock > input { font: 14px var(--hud-font); letter-spacing: 2px; }
+.version-shell .template-picker > span { font: 600 11px var(--hud-font); letter-spacing: 1px; color: #b7b2a7; }
+.version-shell .template-picker select { font: 14px var(--hud-font); color: #e3dfd5; }
+.version-shell .create-button { font: 600 12px var(--hud-font); letter-spacing: .3px; padding: 0 17px; color: #eddfc5; }
+.version-shell .stage-footer, .version-shell .studio-footer { font: 11px/1.5 var(--hud-font); letter-spacing: .4px; color: #b7bac3; }
+.version-shell .drag-hint { color: #a3a7b1; }
+.version-shell .window-editor { width: 360px; padding: 18px; font-family: var(--hud-font); max-height: calc(100dvh - 245px); }
+.version-shell .editor-heading h2 { font: 600 13px var(--hud-font); letter-spacing: 1px; color: #e1d2b5; }
+.version-shell .editor-heading p, .version-shell .editor-note { font: 12px/1.6 var(--hud-font); color: #b0b5c1; }
+.version-shell .window-editor button { font: 12px var(--hud-font); padding: 10px 7px; color: #e0e2e8; min-height: 38px; }
+.version-shell .editor-heading > button { font-size: 25px; padding: 0 4px; min-height: 28px; }
+.version-shell .paint-options, .version-shell .paint-options label { font: 13px var(--hud-font); color: #e1e3e8; }
+.version-shell .paint-options select { font: 12px var(--hud-font); padding: 6px 2px; color: #e1e3e8; min-height: 34px; }
+.version-shell .paint-swatches button { min-height: 27px; }
+.version-shell .canvas-status { font: 11px var(--hud-font); color: #b1b6c2; }
+.version-shell .studio-toast { font: 13px/1.5 var(--hud-font); }
+.version-shell .classic-app .drag-surface { bottom: 118px; }
+@media(max-width:1050px) {
+  .version-shell .mode-switch { top: 76px; }
+  .version-shell .scene-caption { top: 143px; }
+  .version-shell .window-editor { top: 132px; max-height: calc(100dvh - 307px); }
+  .version-shell .drag-surface { top: 128px; }
+}
+@media(max-width:600px) {
+  .version-shell .version-toolbar { font-size: 10px; padding: 0 13px; letter-spacing: .4px; }
+  .version-shell .room-switch { font-size: 12px; }
+  .version-shell .stage-header { left: 10px; top: 19px; max-width: 170px; }
+  .version-shell .stage-header h1 { font-size: 11px; letter-spacing: .6px; }
+  .version-shell .stage-header h1 span { font-size: 10px; }
+  .version-shell .controls { width: 156px; }
+  .version-shell .controls.is-open { width: min(320px, calc(100vw - 28px)); }
+  .version-shell .controls-toggle { font-size: 12px; padding: 0 11px; }
+  .version-shell .controls-body { padding: 18px; }
+  .version-shell .mode-switch button { font-size: 12px; padding: 10px 18px; }
+  .version-shell .scene-caption > span { font-size: 11px; }
+  .version-shell .scene-caption p { font-size: 11px; }
+  .version-shell .creation-dock { width: calc(100% - 28px); min-height: 50px; bottom: 55px; }
+  .version-shell .creation-dock > input { font-size: 14px; letter-spacing: 1px; }
+  .version-shell .template-picker select { font-size: 13px; }
+  .version-shell .create-button { font-size: 11px; padding: 0 10px; }
+  .version-shell .stage-footer, .version-shell .studio-footer { font-size: 10px; letter-spacing: 0; }
+  .version-shell .studio-footer > span:first-child { max-width: 72%; }
+  .version-shell .window-editor { width: auto; padding: 14px; }
+  .version-shell .paint-options label { font-size: 12px; }
+}
