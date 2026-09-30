@@ -4,7 +4,7 @@ import { WindowEditor } from './components/WindowEditor';
 import { templateArtwork, textArtwork, palettes as artPalettes, type Artwork } from './glassModel';
 import '../styles/simulator.css';
 
-const initial: GlassSettings = { text: 'TAKE TWO', angle: -27, length: 0.78, intensity: 1.7, spread: 0.24, haze: 1.5, bloom: 0.55, thickness: 0.8, size: 1, palette: 'Cathedral', seed: 3, animate: false };
+const initial: GlassSettings = { text: 'MATHEW', angle: -27, length: 0.78, intensity: 1.7, spread: 0.24, haze: 1.5, bloom: 0.55, thickness: 0.8, size: 1, palette: 'Cathedral', seed: 3, animate: false };
 export default function ClassicStudio({ active = true }: { active?: boolean }) {
   const [settings, setSettings] = useState(initial);
   const [mode, setMode] = useState<'text' | 'window' | 'art'>('text');

@@ -17,7 +17,7 @@ export interface StudioSettings {
   quality: 'draft' | 'high';
 }
 export const defaults: StudioSettings = {
-  mode: 'window', text: 'TAKE TWO', palette: 'Cathedral', seed: 3,
+  mode: 'window', text: 'MATHEW', palette: 'Cathedral', seed: 3,
   azimuth: -22, elevation: 38, intensity: 5, warmth: 0.3, sunSize: 0.6,
   haze: 0.12, anisotropy: 0.35, thickness: 0.7, roughness: 0.2, lead: 0.09,
   bloom: 0.22, exposure: 1.2, ambient: 0.13, floor: 0.65, size: 1,
